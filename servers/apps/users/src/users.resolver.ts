@@ -15,7 +15,7 @@ export class UserResolver {
     @Args('registerInput') registerDto: RegisterDto,
     @Context() context: { res: Response },
   ): Promise<RegisterResponse> {
-    if (!registerDto.name || !registerDto.email || !registerDto.password) {
+    if (!registerDto.name || !registerDto.email || !registerDto.password || !registerDto.phone_number) {
       throw new BadRequestException('Please fill all the required fields.');
     }
 
