@@ -28,6 +28,8 @@ model User {
     name        String
     email       String @unique
     password    String
+    phone_number Float @unique
+    address     String?
     avatar      Avatars?
     role        Role @default(User)
     createdAt   DateTime @default(now())
