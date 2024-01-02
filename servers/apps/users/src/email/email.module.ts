@@ -1,6 +1,6 @@
 import { Module, Global } from '@nestjs/common';
 import { EmailService } from './email.service';
-import { MailerModule } from '@nest-modules/mailer';
+import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
@@ -19,10 +19,10 @@ import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
           },
         },
         default: {
-          from: 'Food Devlivery',
+          from: 'FoodDevlivery',
         },
         template: {
-          dir: join(__dirname, '../../../../services/email-templates'),
+          dir: join(__dirname, '../../../../servers/email-templates'),
           adapter: new EjsAdapter(),
           options: {
             strict: false,
@@ -33,5 +33,6 @@ import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
     }),
   ],
   providers: [EmailService],
+  exports: [EmailService],
 })
 export class EmailModule {}
