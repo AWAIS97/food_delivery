@@ -5,6 +5,7 @@ import { LoginDto, RegisterDto } from './dto/user.dto';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
+import { EmailService } from './email/email.service';
 
 interface UserDataInterface {
   name: string;
@@ -19,6 +20,7 @@ export class UsersService {
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     private readonly prismaService: PrismaService,
+    private readonly emailsService: EmailService,
   ) {}
 
   // -----------------------------register user-----------------------------------
@@ -49,12 +51,19 @@ export class UsersService {
     const user = { name, email, password: hashedPassword, phone_number };
     const activationToken = await this.createActivationToken(user);
     const activationCode = activationToken.activationCode;
-    console.log('activationToken:::::::', activationCode);
+
+    await this.emailsService.sendMail({
+      email,
+      subject: 'Activate you account!',
+      template: './activation-email',
+      name,
+      activationCode,
+    });
 
     //  await this.prismaService.user.create({
     //   data: { name, email, password: hashedPassword, phone_number },
     // });
-    // return { user, response };
+     return { user, response };
   }
 
   // ------------------------------account activation----------------------------------

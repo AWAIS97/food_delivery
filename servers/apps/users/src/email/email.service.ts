@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { MailerService } from '@nest-modules/mailer';
+import { MailerService } from '@nestjs-modules/mailer';
 
 type mailOptions = {
   subject: string;
   email: string;
   name: string;
-  activationCode: number;
+  activationCode: string;
   template: string;
 };
 
