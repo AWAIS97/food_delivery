@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import { LoginDto, RegisterDto } from './dto/user.dto';
+import { JwtService, JwtVerifyOptions } from '@nestjs/jwt';
+import { LoginDto, RegisterDto, ActivationDto } from './dto/user.dto';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
@@ -51,6 +51,7 @@ export class UsersService {
     const user = { name, email, password: hashedPassword, phone_number };
     const activationToken = await this.createActivationToken(user);
     const activationCode = activationToken.activationCode;
+    const activation_token = activationToken.token;
 
     await this.emailsService.sendMail({
       email,
@@ -59,14 +60,10 @@ export class UsersService {
       name,
       activationCode,
     });
-
-    //  await this.prismaService.user.create({
-    //   data: { name, email, password: hashedPassword, phone_number },
-    // });
-     return { user, response };
+    return { activation_token, response };
   }
 
-  // ------------------------------account activation----------------------------------
+  // ------------------------------activation token----------------------------------
   async createActivationToken(user: UserDataInterface) {
     const activationCode = Math.floor(1000 + Math.random() * 9000).toString();
     const token = this.jwtService.sign(
@@ -80,6 +77,46 @@ export class UsersService {
       },
     );
     return { token, activationCode };
+  }
+
+  // ------------------------------activate user----------------------------------
+  async activateUser(activationDto: ActivationDto, response: Response) {
+    const { activationCode, activationToken } = activationDto;
+
+    const newUser: { user: UserDataInterface; activationCode: string } =
+      this.jwtService.verify(activationToken, {
+        secret: this.configService.get<string>('ACTIVATION_SECRET'),
+      } as JwtVerifyOptions) as {
+        user: UserDataInterface;
+        activationCode: string;
+      };
+
+    if (newUser.activationCode !== activationCode) {
+      throw new BadRequestException('Invalid activation code');
+    }
+
+    const { name, email, password, phone_number } = newUser.user;
+
+    const existUser = await this.prismaService.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (existUser) {
+      throw new BadRequestException('User already exist with this email!');
+    }
+
+    const user = await this.prismaService.user.create({
+      data: {
+        name,
+        email,
+        password,
+        phone_number,
+      },
+    });
+
+    return { user, response };
   }
 
   // ------------------------------login user----------------------------------
