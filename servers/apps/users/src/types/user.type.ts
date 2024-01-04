@@ -21,18 +21,23 @@ export class RegisterResponse {
 
 @ObjectType()
 export class ActivationResponse {
-  @Field(()=> User)
+  @Field(() => User)
   user: User | any;
 
   @Field(() => ErrorType, { nullable: true })
   error?: ErrorType;
 }
 
-
 @ObjectType()
 export class LoginResponse {
-  @Field(() => User)
-  user?: User;
+  @Field(() => User, { nullable: true })
+  user: User;
+
+  @Field({ nullable: true })
+  accessToken: String;
+
+  @Field({ nullable: true })
+  refreshToken: String;
 
   @Field(() => ErrorType, { nullable: true })
   error?: ErrorType;
