@@ -8,6 +8,7 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'public'))
   app.setBaseViewsDir(join(__dirname, '..', 'servers/email-templates'))
   app.setViewEngine('ejs')
+  app.enableCors();
   
   await app.listen(4001);
 }

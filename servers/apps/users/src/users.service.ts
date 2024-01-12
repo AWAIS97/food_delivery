@@ -97,7 +97,7 @@ export class UsersService {
     }
 
     const { name, email, password, phone_number } = newUser.user;
-
+    
     const existUser = await this.prismaService.user.findUnique({
       where: {
         email,
