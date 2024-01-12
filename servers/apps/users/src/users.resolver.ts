@@ -41,7 +41,7 @@ export class UserResolver {
   async activateUser(
     @Args('activationDto') activationDto: ActivationDto,
     @Context() context: { res: Response },
-  ): Promise<ActivationResponse> {
+  ): Promise<ActivationResponse> {    
     return await this.usersService.activateUser(activationDto, context.res);
   }
 
