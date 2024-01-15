@@ -3,30 +3,39 @@ import styles from "@/src/app/utils/styles";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AiOutlineEye, AiOutlineEyeInvisible, AiFillGithub } from "react-icons/ai";
+import {
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+  AiFillGithub,
+} from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
+import toast from "react-hot-toast";
+import { useMutation } from "@apollo/client";
+import { LOGIN_USER } from "@/src/graphql/actions/login.action";
 
-const formSchema = z.object({
+const LoginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8, "Password must be at least 8characters long!"),
 });
 
-type LoginSchema = z.infer<typeof formSchema>;
+type LoginSchema = z.infer<typeof LoginSchema>;
 
 const Login = ({
-    setActiveState,
-    setOpen,
-  }: {
-    setActiveState: (e: string) => void;
-    setOpen: (e: boolean) => void;
-  }) => {
+  setActiveState,
+  setOpen,
+}: {
+  setActiveState: (e: string) => void;
+  setOpen: (e: boolean) => void;
+}) => {
+  const [Login, { loading }] = useMutation(LOGIN_USER);
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<LoginSchema>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(LoginSchema),
   });
   const [show, setShow] = useState(false);
 
@@ -35,19 +44,19 @@ const Login = ({
       email: data.email,
       password: data.password,
     };
-    // const response = await Login({
-    //   variables: loginData,
-    // });
-    // if (response.data.Login.user) {
-    //   toast.success("Login Successful!");
-    //   Cookies.set("refresh_token", response.data.Login.refreshToken);
-    //   Cookies.set("access_token", response.data.Login.accessToken);
-    //   setOpen(false);
-    //   reset();
-    //   window.location.reload();
-    // } else {
-    //   toast.error(response.data.Login.error.message);
-    // }
+    const response = await Login({
+      variables: loginData,
+    });
+    if (response.data.Login.user) {
+      toast.success("Login Successful!");
+      // Cookies.set("refresh_token", response.data.Login.refreshToken);
+      // Cookies.set("access_token", response.data.Login.accessToken);
+      setOpen(false);
+      reset();
+      window.location.reload();
+    } else {
+      toast.error(response.data.Login.error.message);
+    }
   };
   return (
     <div>
@@ -104,7 +113,7 @@ const Login = ({
           <input
             type="submit"
             value="Login"
-            //disabled={isSubmitting || loading}
+            disabled={isSubmitting || loading}
             className={`${styles.button} mt-3`}
           />
         </div>
@@ -113,6 +122,7 @@ const Login = ({
         <h5 className="text-center pt-4 font-Poppins text-[16px] text-white">
           Or join with
         </h5>
+
         <div
           className="flex items-center justify-center my-3"
           onClick={() => signIn()}
