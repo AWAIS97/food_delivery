@@ -12,6 +12,7 @@ import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
 import { useMutation } from "@apollo/client";
 import { LOGIN_USER } from "@/src/graphql/actions/login.action";
+import Cookies from "js-cookie";
 
 const LoginSchema = z.object({
   email: z.string().email(),
@@ -49,8 +50,8 @@ const Login = ({
     });
     if (response.data.Login.user) {
       toast.success("Login Successful!");
-      // Cookies.set("refresh_token", response.data.Login.refreshToken);
-      // Cookies.set("access_token", response.data.Login.accessToken);
+      Cookies.set("refresh_token", response.data.Login.refreshToken);
+      Cookies.set("access_token", response.data.Login.accessToken);
       setOpen(false);
       reset();
       window.location.reload();
