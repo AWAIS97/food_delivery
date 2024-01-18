@@ -5,7 +5,7 @@ import {
   LoginResponse,
   LogoutResponse,
 } from './types/user.type';
-import { RegisterDto, ActivationDto } from './dto/user.dto';
+import { RegisterDto, ActivationDto, LoginDto,  } from './dto/user.dto';
 import { UsersService } from './users.service';
 import { Response } from 'express';
 import { BadRequestException, UseGuards } from '@nestjs/common';
@@ -47,10 +47,9 @@ export class UserResolver {
 
   @Mutation(() => LoginResponse)
   async Login(
-    @Args('email') email: string,
-    @Args('password') password: string,
+    @Args('loginDto') loginDto: LoginDto,
   ): Promise<LoginResponse> {
-    return await this.usersService.login({ email, password });
+    return await this.usersService.login(loginDto);
   }
 
   @Query(() => LoginResponse)
