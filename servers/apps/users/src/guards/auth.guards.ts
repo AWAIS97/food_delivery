@@ -28,14 +28,14 @@ export class AuthGuard implements CanActivate {
     }
 
     if (accessToken) {
-      const decoded = this.jwtService.verify(accessToken, {
-        secret: this.configService.get<string>('ACCESS_TOKEN_SECRET'),
-      });
-      if (!decoded) {
-        throw new UnauthorizedException('Invalid access token');
-      }
+      const decoded = this.jwtService.decode(accessToken);
 
-      await this.updateAccessToken(req);
+      const expirationTime = decoded?.exp;
+
+      if (expirationTime * 1000 < Date.now()) {
+        await this.updateAccessToken(req);
+      }
+      
     }
     return true;
   }
