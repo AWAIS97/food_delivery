@@ -4,10 +4,10 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { GqlExecutionContext } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../../../prisma/prisma.service';
-import { GqlExecutionContext, GraphQLExecutionContext } from '@nestjs/graphql';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -16,6 +16,7 @@ export class AuthGuard implements CanActivate {
     private readonly jwtService: JwtService,
     private readonly prismaService: PrismaService,
   ) {}
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const gqlContext = GqlExecutionContext.create(context);
     const { req } = gqlContext.getContext();
@@ -24,30 +25,32 @@ export class AuthGuard implements CanActivate {
     const refreshToken = req.headers.refreshtoken as string;
 
     if (!accessToken || !refreshToken) {
-      throw new UnauthorizedException('Please login to access this resource');
+      throw new UnauthorizedException('Please login to access this resource!');
     }
 
     if (accessToken) {
       const decoded = this.jwtService.decode(accessToken);
-
       const expirationTime = decoded?.exp;
 
       if (expirationTime * 1000 < Date.now()) {
         await this.updateAccessToken(req);
       }
-      
     }
+
     return true;
   }
 
   private async updateAccessToken(req: any): Promise<void> {
     try {
-      const refreshToken = req.headers.refreshtoken as string;
-      const decoded = this.jwtService.verify(refreshToken, {
-        secret: this.configService.get<string>('REFRESH_TOKEN_SECRET'),
-      });
-      if (!decoded) {
-        throw new UnauthorizedException('Invalid refresh token');
+      const refreshTokenData = req.headers.refreshtoken as string;
+
+      const decoded = this.jwtService.decode(refreshTokenData);
+      const expirationTime = decoded.exp * 1000;
+
+      if (expirationTime < Date.now()) {
+        throw new UnauthorizedException(
+          'Please login to access this resource!',
+        );
       }
 
       const user = await this.prismaService.user.findUnique({
@@ -60,7 +63,7 @@ export class AuthGuard implements CanActivate {
         { id: user.id },
         {
           secret: this.configService.get<string>('ACCESS_TOKEN_SECRET'),
-          expiresIn: '15m',
+          expiresIn: '5m',
         },
       );
 
@@ -75,8 +78,8 @@ export class AuthGuard implements CanActivate {
       req.accessToken = newAccessToken;
       req.refreshToken = newRefreshToken;
       req.user = user;
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      throw new UnauthorizedException(error.message);
     }
   }
 }
