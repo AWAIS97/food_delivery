@@ -4,9 +4,10 @@ import {
   ActivationResponse,
   LoginResponse,
   LogoutResponse,
-  ForgotPasswordResponse
+  ForgotPasswordResponse,
+  ResetPasswordResponse
 } from './types/user.type';
-import { RegisterDto, ActivationDto, LoginDto,ForgotPasswordDto  } from './dto/user.dto';
+import { RegisterDto, ActivationDto, LoginDto,ForgotPasswordDto, ResetPasswordDto  } from './dto/user.dto';
 import { UsersService } from './users.service';
 import { Response } from 'express';
 import { BadRequestException, UseGuards } from '@nestjs/common';
@@ -64,6 +65,13 @@ export class UserResolver {
     @Args('forgotPasswordDto') forgotPasswordDto: ForgotPasswordDto,
   ): Promise<ForgotPasswordResponse> {
     return await this.usersService.forgotPassword(forgotPasswordDto);
+  }
+
+  @Mutation(() => ResetPasswordResponse)
+  async resetPassword(
+    @Args('resetPasswordDto') resetPasswordDto: ResetPasswordDto,
+  ): Promise<ResetPasswordResponse> {
+    return await this.usersService.resetPassword(resetPasswordDto);
   }
 
   @Query(() => LogoutResponse)

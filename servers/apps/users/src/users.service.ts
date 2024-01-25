@@ -1,7 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService, JwtVerifyOptions } from '@nestjs/jwt';
-import { LoginDto, RegisterDto, ActivationDto, ForgotPasswordDto } from './dto/user.dto';
+import {
+  LoginDto,
+  RegisterDto,
+  ActivationDto,
+  ForgotPasswordDto,
+  ResetPasswordDto,
+} from './dto/user.dto';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
@@ -184,8 +190,8 @@ export class UsersService {
     const forgotPasswordToken = await this.generateForgotPasswordLink(user);
 
     const resetPasswordUrl =
-    this.configService.get<string>('CLIENT_SIDE_URI') +
-    `/reset-password?verify=${forgotPasswordToken}`;
+      this.configService.get<string>('CLIENT_SIDE_URI') +
+      `/reset-password?verify=${forgotPasswordToken}`;
 
     await this.emailsService.sendMail({
       email,
@@ -196,6 +202,28 @@ export class UsersService {
     });
 
     return { message: `Your forgot password request succesful!` };
+  }
+
+  //-----------------------------reset password---------------------
+  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    const { password, activationToken } = resetPasswordDto;
+    const decoded = this.jwtService.decode(activationToken);
+
+    if (!decoded || decoded?.exp * 1000 < Date.now()) {
+      throw new BadRequestException('Invalid token!');
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await this.prismaService.user.update({
+      where: {
+        id: decoded.user.id,
+      },
+      data: {
+        password: hashedPassword,
+      },
+    });
+    return { user };
   }
   //--------------------------get logged in user --------------------
 
