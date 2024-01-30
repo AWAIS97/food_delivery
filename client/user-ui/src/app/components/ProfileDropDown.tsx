@@ -12,38 +12,38 @@ import AuthScreen from "../screens/AuthScreen";
 import useUser from "../../hooks/useUser";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
-//import { signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 //import { registerUser } from "../../graphql/actions/register.action";
 
 const ProfileDropDown = () => {
   const [signedIn, setsignedIn] = useState(false);
   const [open, setOpen] = useState(false);
   const { user, loading } = useUser();
- // const { data } = useSession();
+  const { data } = useSession();
 
   useEffect(() => {
     if (!loading) {
       setsignedIn(!!user);
     }
-    // if (data?.user) {
-    //   setsignedIn(true);
-    //   addUser(data?.user);
-    // }
-  }, [loading, user, open]);
+    if (data?.user) {
+      setsignedIn(true);
+      addUser(data?.user);
+    }
+  }, [loading, user, open, data]);
 
   const logoutHandler = () => {
-    // if (data?.user) {
-    //   signOut();
-    // } else {
+    if (data?.user) {
+      signOut();
+    } else {
       Cookies.remove("access_token");
       Cookies.remove("refresh_token");
       toast.success("Log out successful!");
       window.location.reload();
-   // }
+    }
   };
 
   const addUser = async (user: any) => {
-  //await registerUser(user);
+    //await registerUser(user);
   };
 
   return (
@@ -54,14 +54,14 @@ const ProfileDropDown = () => {
             <Avatar
               as="button"
               className="transition-transform"
-              src={user.image}
+              src={data?.user ? data.user.image : user.image}
             />
           </DropdownTrigger>
           <DropdownMenu aria-label="Profile Actions" variant="flat">
             <DropdownItem key="profile" className="h-14 gap-2">
               <p className="font-semibold">Signed in as</p>
               <p className="font-semibold">
-                {user.email}
+                {data?.user ? data.user.email : user.email}
               </p>
             </DropdownItem>
             <DropdownItem key="settings">My Profile</DropdownItem>
