@@ -1,0 +1,24 @@
+{
+  "name": "api-users",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/api-users/src",
+  "projectType": "application",
+  "targets": {
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "api-users:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "api-users:build:development"
+        },
+        "production": {
+          "buildTarget": "api-users:build:production"
+        }
+      }
+    }
+  },
+  "tags": []
+}
