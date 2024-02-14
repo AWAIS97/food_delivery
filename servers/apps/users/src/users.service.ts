@@ -8,7 +8,7 @@ import {
   ForgotPasswordDto,
   ResetPasswordDto,
 } from './dto/user.dto';
-import { PrismaService } from '../../../prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { EmailService } from './email/email.service';
