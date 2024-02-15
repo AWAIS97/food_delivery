@@ -25,7 +25,7 @@ export class RestaurantService {
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
-  ) {}
+  ) {} 
 
   // register restaurant service
   async registerRestaurant(registerDto: RegisterDto, response: Response) {
