@@ -9,7 +9,7 @@ async function bootstrap() {
 
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.setBaseViewsDir(
-    join(__dirname, '..', 'apps/api-restuarants/email-templates'),
+    join(__dirname, '..', 'servers/email-templates'),
   );
   app.setViewEngine('ejs');
 
@@ -17,6 +17,6 @@ async function bootstrap() {
     origin: '*',
   });
 
-  await app.listen(4001);
+  await app.listen(4002);
 }
 bootstrap();
