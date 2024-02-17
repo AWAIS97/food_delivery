@@ -27,6 +27,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/users/tsconfig.app.json"
       }
+    },
+    "restuarants": {
+      "type": "application",
+      "root": "apps/restuarants",
+      "entryFile": "main",
+      "sourceRoot": "apps/restuarants/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/restuarants/tsconfig.app.json"
+      }
     }
   }
 }

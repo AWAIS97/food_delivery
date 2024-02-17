@@ -1,4 +1,4 @@
-import { Module, Global } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { EmailService } from './email.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
@@ -18,11 +18,11 @@ import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
             pass: config.get('SMTP_PASSWORD'),
           },
         },
-        default: {
+        defaults: {
           from: 'FoodDelivery',
         },
         template: {
-          dir: join(__dirname, '../../../../servers/apps/users/email-templates'),
+          dir: join(__dirname, '../../../../servers/apps/restuarants/email-templates'),
           adapter: new EjsAdapter(),
           options: {
             strict: false,

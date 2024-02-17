@@ -1,7 +1,7 @@
 import {
-  Injectable,
   CanActivate,
   ExecutionContext,
+  Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
@@ -12,9 +12,9 @@ import { PrismaService } from '../../prisma/prisma.service';
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
-    private readonly prismaService: PrismaService,
+    private readonly prisma: PrismaService,
+    private readonly config: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -27,12 +27,13 @@ export class AuthGuard implements CanActivate {
     if (!accessToken || !refreshToken) {
       throw new UnauthorizedException('Please login to access this resource!');
     }
-
     if (accessToken) {
-      const decoded = this.jwtService.decode(accessToken);
-      const expirationTime = decoded?.exp;
+      const decoded = this.jwtService.verify(accessToken, {
+        ignoreExpiration: true,
+        secret: this.config.get<string>('ACCESS_TOKEN_SECRET'),
+      });
 
-      if (expirationTime * 1000 < Date.now()) {
+      if (decoded?.exp * 1000 < Date.now()) {
         await this.updateAccessToken(req);
       }
     }
@@ -44,7 +45,10 @@ export class AuthGuard implements CanActivate {
     try {
       const refreshTokenData = req.headers.refreshtoken as string;
 
-      const decoded = this.jwtService.decode(refreshTokenData);
+      const decoded = this.jwtService.verify(refreshTokenData, {
+        secret: this.config.get<string>('REFRESH_TOKEN_SECRET'),
+      });
+
       const expirationTime = decoded.exp * 1000;
 
       if (expirationTime < Date.now()) {
@@ -53,31 +57,31 @@ export class AuthGuard implements CanActivate {
         );
       }
 
-      const user = await this.prismaService.user.findUnique({
+      const restaurant = await this.prisma.restaurant.findUnique({
         where: {
           id: decoded.id,
         },
       });
 
-      const newAccessToken = this.jwtService.sign(
-        { id: user.id },
+      const accessToken = this.jwtService.sign(
+        { id: restaurant.id },
         {
-          secret: this.configService.get<string>('ACCESS_TOKEN_SECRET'),
-          expiresIn: '5m',
+          secret: this.config.get<string>('ACCESS_TOKEN_SECRET'),
+          expiresIn: '1m',
         },
       );
 
-      const newRefreshToken = this.jwtService.sign(
-        { id: user.id },
+      const refreshToken = this.jwtService.sign(
+        { id: restaurant.id },
         {
-          secret: this.configService.get<string>('REFRESH_TOKEN_SECRET'),
+          secret: this.config.get<string>('REFRESH_TOKEN_SECRET'),
           expiresIn: '7d',
         },
       );
 
-      req.accessToken = newAccessToken;
-      req.refreshToken = newRefreshToken;
-      req.user = user;
+      req.accesstoken = accessToken;
+      req.refreshtoken = refreshToken;
+      req.restaurant = restaurant;
     } catch (error) {
       throw new UnauthorizedException(error.message);
     }

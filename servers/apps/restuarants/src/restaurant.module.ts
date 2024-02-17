@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import {
   ApolloFederationDriver,
   ApolloFederationDriverConfig,
 } from '@nestjs/apollo';
-import { ConfigService, ConfigModule } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
-import { UserResolver } from './users.resolver';
 import { EmailModule } from './email/email.module';
+import { RestaurantService } from './restaurant.service';
+import { RestaurantResolver } from './restaurant.resolver';
 
 @Module({
   imports: [
@@ -26,11 +26,11 @@ import { EmailModule } from './email/email.module';
   ],
   controllers: [],
   providers: [
-    UsersService,
+    RestaurantService,
     ConfigService,
     JwtService,
     PrismaService,
-    UserResolver,
+    RestaurantResolver,
   ],
 })
-export class UsersModule {}
+export class restaurantModule {}
