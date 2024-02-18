@@ -1,4 +1,4 @@
-type SibeBarItemsTypes = {
+type SideBarItemsTypes = {
   title: string;
   url: string;
   icon: any;
