@@ -1,8 +1,11 @@
-import React from 'react'
+import FoodData from "../../../shared/components/data/Food.data"
 
 const Foods = () => {
   return (
-    <div>Foods</div>
+    <div className="md:w-[90%] xl:w-[75%] m-auto">
+      <h1 className="text-4xl text-center pt-3">All Foods</h1>
+      <FoodData />
+    </div>
   )
 }
 
