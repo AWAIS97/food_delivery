@@ -7,6 +7,7 @@ import { IoLogOutOutline } from 'react-icons/io5';
 import { SiDatabricks } from 'react-icons/si';
 import { AiOutlineDeliveredProcedure } from 'react-icons/ai';
 import { MdOutlineReviews } from 'react-icons/md';
+import { AiOutlineDelete } from "react-icons/ai";
 
 export const Icons: any = {
   home: <FiHome />,
@@ -18,4 +19,5 @@ export const Icons: any = {
   overview: <SiDatabricks />,
   order: <AiOutlineDeliveredProcedure />,
   reviews: <MdOutlineReviews />,
+  delete: <AiOutlineDelete />,
 };

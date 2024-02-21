@@ -36,3 +36,11 @@ type OrdersDataType = {
 type FoodCategoryType = {
   title: string;
 }
+
+type FoodsDataType = {
+  id: string;
+  name: string;
+  price: number | string;
+  totalOrders: number;
+  createdAt: Date | string;
+};
