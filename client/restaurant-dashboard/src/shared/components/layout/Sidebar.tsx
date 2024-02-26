@@ -8,7 +8,7 @@ const Sidebar = () => {
       <div className="p-3 flex flex-col justify-around h-screen">
         <div className="w-[90%] flex flex-col items-center">
           <Image
-            src={"https://avatars.githubusercontent.com/u/87035691?v=4"}
+            src={""}
             alt="profile-pic"
             width={120}
             height={120}
