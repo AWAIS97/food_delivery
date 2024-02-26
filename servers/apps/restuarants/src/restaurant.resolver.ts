@@ -5,7 +5,7 @@ import {
   LoginResponse,
   LogoutResposne,
   RegisterResponse,
-} from './types/user.type';
+} from './types/restaurant.type';
 import { ActivationDto, RegisterDto } from './dto/restaurant.dto';
 import { Response, Request } from 'express';
 import { UseGuards } from '@nestjs/common';
