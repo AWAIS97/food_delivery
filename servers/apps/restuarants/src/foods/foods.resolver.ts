@@ -1,6 +1,6 @@
 
 import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { FoodServices } from "./foods.service";
+import { FoodsService } from "./foods.service";
 import {
   CreateFoodResponse,
   DeleteFoodResponse,
@@ -13,7 +13,7 @@ import { CreateFoodDto, DeleteFoodDto } from "./dto/foods.dto";
 
 @Resolver("Foods")
 export class FoodsResolver {
-  constructor(private readonly foodsService: FoodServices) {}
+  constructor(private readonly foodsService: FoodsService) {}
   @Mutation(() => CreateFoodResponse)
   @UseGuards(AuthGuard)
   async createFood(
