@@ -3,8 +3,8 @@ import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { FoodsService } from "./foods.service";
 import {
   CreateFoodResponse,
-  DeleteFoodResponse,
-  LoggedInRestaurantFoodResponse,
+  // DeleteFoodResponse,
+  // LoggedInRestaurantFoodResponse,
 } from "./types/foods.types";
 import { UseGuards } from "@nestjs/common";
 import { AuthGuard } from "../guards/auth.guard";

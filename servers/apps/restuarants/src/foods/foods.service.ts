@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-
 import { PrismaService } from '../../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { EmailService } from '../email/email.service';
@@ -48,7 +47,7 @@ export class FoodsService {
         }
       }
 
-      const foodData = {
+      const foodData: any = {
         name,
         description,
         price,
