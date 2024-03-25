@@ -3,7 +3,7 @@ import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { FoodsService } from "./foods.service";
 import {
   CreateFoodResponse,
-  // DeleteFoodResponse,
+  DeleteFoodResponse,
   // LoggedInRestaurantFoodResponse,
 } from "./types/foods.types";
 import { UseGuards } from "@nestjs/common";
@@ -25,5 +25,14 @@ export class FoodsResolver {
       context.req,
       context.res
     );
+  }
+
+  @Mutation(() => DeleteFoodResponse)
+  @UseGuards(AuthGuard)
+  async deleteFood(
+    @Context() context: { req: any },
+    @Args("deleteFoodDto") deleteFoodDto: DeleteFoodDto
+  ) {
+    return this.foodsService.deleteFood(deleteFoodDto, context.req);
   }
 }
