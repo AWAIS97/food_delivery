@@ -76,5 +76,37 @@ export class FoodsService {
 
   async getLoggedInRestuarantFood() {}
 
-  async deleteFood() {}
+   // delete foods of a restaurant
+  async deleteFood(deleteFoodDto: DeleteFoodDto, req: any) {
+    const restaurantId = req.restaurant?.id;
+
+    const food = await this.prisma.foods.findUnique({
+      where: {
+        id: deleteFoodDto.id,
+      },
+      include: {
+        restaurant: true,
+        images: true,
+      },
+    });
+
+    if (food.restaurant.id !== restaurantId) {
+      throw Error("Only Restaurant owner can delete food!");
+    }
+
+    // Manually delete the related images
+    await this.prisma.images.deleteMany({
+      where: {
+        foodId: deleteFoodDto.id,
+      },
+    });
+
+    await this.prisma.foods.delete({
+      where: {
+        id: deleteFoodDto.id,
+      },
+    });
+
+    return { message: "Food Deleted successfully!" };
+  }
 }
