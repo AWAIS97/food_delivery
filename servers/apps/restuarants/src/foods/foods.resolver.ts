@@ -4,7 +4,7 @@ import { FoodsService } from "./foods.service";
 import {
   CreateFoodResponse,
   DeleteFoodResponse,
-  // LoggedInRestaurantFoodResponse,
+  LoggedInRestaurantFoodResponse,
 } from "./types/foods.types";
 import { UseGuards } from "@nestjs/common";
 import { AuthGuard } from "../guards/auth.guard";
@@ -22,6 +22,17 @@ export class FoodsResolver {
   ) {
     return await this.foodsService.createFood(
       createFoodDto,
+      context.req,
+      context.res
+    );
+  }
+
+  @Query(() => LoggedInRestaurantFoodResponse)
+  @UseGuards(AuthGuard)
+  async getLoggedInRestaurantFoods(
+    @Context() context: { req: any; res: Response }
+  ) {
+    return await this.foodsService.getLoggedInRestuarantFood(
       context.req,
       context.res
     );

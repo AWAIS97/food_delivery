@@ -74,7 +74,24 @@ export class FoodsService {
     }
   }
 
-  async getLoggedInRestuarantFood() {}
+   // get all restaurant foods
+   async getLoggedInRestuarantFood(req: any, res: Response) {
+    const restaurantId = req.restaurant?.id;
+
+    const foods = await this.prisma.foods.findMany({
+      where: {
+        restaurantId,
+      },
+      include: {
+        images: true,
+        restaurant: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return { foods };
+  }
 
    // delete foods of a restaurant
   async deleteFood(deleteFoodDto: DeleteFoodDto, req: any) {
@@ -90,7 +107,7 @@ export class FoodsService {
       },
     });
 
-    if (food.restaurant.id !== restaurantId) {
+    if (food.restaurantId !== restaurantId) {
       throw Error("Only Restaurant owner can delete food!");
     }
 
