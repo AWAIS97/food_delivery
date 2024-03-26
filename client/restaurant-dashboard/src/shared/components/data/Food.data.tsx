@@ -3,15 +3,15 @@ import { Box } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Icons } from "../../../utils/Icon";
 import { useMutation, useQuery } from "@apollo/client";
-//import { GET_FOODS } from "../../../graphql/actions/get.foods";
+import { GET_FOODS } from "../../../graphql/actions/get.foods";
 import Loader from "../layout/Loader";
 import { format } from "timeago.js";
-//import { DELETE_FOOD } from "../../../graphql/actions/delete.food";
+import { DELETE_FOOD } from "../../../graphql/actions/delete.food";
 import toast from "react-hot-toast";
 
 const FoodData = () => {
-  const { data, loading, refetch } = useQuery();
-  const [DeleteFood] = useMutation();
+  const { data, loading, refetch } = useQuery(DELETE_FOOD);
+  const [DeleteFood] = useMutation(DELETE_FOOD);
   const foods = data?.getLoggedInRestaurantFoods?.foods;
 
   const handleDeleteFood = async (e: string) => {
@@ -19,7 +19,7 @@ const FoodData = () => {
       variables: {
         id: e,
       },
-      refetchQueries: [{ query:  }],
+      refetchQueries: [{ query: DELETE_FOOD }],
     })
       .then((res) => {
         toast.success("Your Food Deleted successfully!");

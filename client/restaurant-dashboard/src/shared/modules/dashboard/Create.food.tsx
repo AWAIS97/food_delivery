@@ -6,7 +6,7 @@ import { foodCategoryItems } from "../../../app/configs/constants";
 import { ChangeEvent, DragEvent, useState } from "react";
 import Image from "next/image";
 import { useMutation } from "@apollo/client";
-//import { CREATE_FOOD } from "../../../graphql/actions/create.food";
+import { CREATE_FOOD } from "../../../graphql/actions/create.food";
 import toast from "react-hot-toast";
 import { redirect } from "next/navigation";
 
@@ -22,7 +22,7 @@ const formSchema = z.object({
 type createFoodSchema = z.infer<typeof formSchema>;
 
 const CreateFood = () => {
-  const [createFoodMutation] = useMutation();
+  const [createFoodMutation] = useMutation(CREATE_FOOD);
   const {
     handleSubmit,
     register,
@@ -116,6 +116,7 @@ const CreateFood = () => {
     }
   };
 
+  console.log("errors", errors)
   return (
     <div className="w-full pb-10">
       <div className="md:w-[70%] w-full m-auto">
@@ -209,7 +210,7 @@ const CreateFood = () => {
             <div className="w-full">
               <input
                 type="file"
-                required
+                //required
                 accept="image/*"
                 multiple
                 id="file"
