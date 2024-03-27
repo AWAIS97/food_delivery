@@ -10,7 +10,7 @@ import { DELETE_FOOD } from "../../../graphql/actions/delete.food";
 import toast from "react-hot-toast";
 
 const FoodData = () => {
-  const { data, loading, refetch } = useQuery(DELETE_FOOD);
+  const { data, loading, refetch } = useQuery(GET_FOODS);
   const [DeleteFood] = useMutation(DELETE_FOOD);
   const foods = data?.getLoggedInRestaurantFoods?.foods;
 

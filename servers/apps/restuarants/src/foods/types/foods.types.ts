@@ -1,6 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { ErrorType } from "../../types/restaurant.type";
-import { Foods } from "prisma/prisma-client";
+//import { Foods } from "prisma/prisma-client";
 import { Food } from "../entities/foods.entities";
 
 @ObjectType()
@@ -15,7 +15,7 @@ export class CreateFoodResponse {
 @ObjectType()
 export class LoggedInRestaurantFoodResponse {
   @Field(() => [Food], { nullable: true })
-  foods: Foods;
+  foods: Food;
 
   @Field(() => ErrorType, { nullable: true })
   error?: ErrorType;
